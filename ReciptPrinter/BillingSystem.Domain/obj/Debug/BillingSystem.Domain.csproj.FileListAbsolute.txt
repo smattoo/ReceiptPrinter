@@ -1,0 +1,5 @@
+D:\Git_Local\SampleServiceLocal\SampleService\ReciptPrinter\BillingSystem.Domain\bin\Debug\BillingSystem.Domain.dll
+D:\Git_Local\SampleServiceLocal\SampleService\ReciptPrinter\BillingSystem.Domain\bin\Debug\BillingSystem.Domain.pdb
+D:\Git_Local\SampleServiceLocal\SampleService\ReciptPrinter\BillingSystem.Domain\obj\Debug\BillingSystem.Domain.dll
+D:\Git_Local\SampleServiceLocal\SampleService\ReciptPrinter\BillingSystem.Domain\obj\Debug\BillingSystem.Domain.pdb
+D:\Git_Local\SampleServiceLocal\SampleService\ReciptPrinter\BillingSystem.Domain\obj\Debug\BillingSystem.Domain.csprojResolveAssemblyReference.cache

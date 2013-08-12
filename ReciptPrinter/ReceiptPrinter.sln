@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiptPrinter", "ReceiptPrinter.csproj", "{3233F390-2C41-4E3B-83D9-81C1F69CFA5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReceiptPrinterTests", "..\ReceiptPrinterTests\ReceiptPrinterTests.csproj", "{A2C26A85-9301-4B64-B61D-54B588BF7884}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingBasket.Repositories", "ReceiptPrinter.Repositories\ShoppingBasket.Repositories.csproj", "{4B44F3C0-DE4C-4B8D-B71C-29A88C29AF6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BillingSystem.Domain", "BillingSystem.Domain\BillingSystem.Domain.csproj", "{61A6D414-D523-4BEE-B03D-17F95EF97B29}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3233F390-2C41-4E3B-83D9-81C1F69CFA5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3233F390-2C41-4E3B-83D9-81C1F69CFA5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3233F390-2C41-4E3B-83D9-81C1F69CFA5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3233F390-2C41-4E3B-83D9-81C1F69CFA5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2C26A85-9301-4B64-B61D-54B588BF7884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2C26A85-9301-4B64-B61D-54B588BF7884}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2C26A85-9301-4B64-B61D-54B588BF7884}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2C26A85-9301-4B64-B61D-54B588BF7884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B44F3C0-DE4C-4B8D-B71C-29A88C29AF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B44F3C0-DE4C-4B8D-B71C-29A88C29AF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B44F3C0-DE4C-4B8D-B71C-29A88C29AF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B44F3C0-DE4C-4B8D-B71C-29A88C29AF6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A6D414-D523-4BEE-B03D-17F95EF97B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A6D414-D523-4BEE-B03D-17F95EF97B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A6D414-D523-4BEE-B03D-17F95EF97B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A6D414-D523-4BEE-B03D-17F95EF97B29}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
