@@ -1,0 +1,50 @@
+# Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
+bin/
+obj/
+[Oo]bj
+[Bb]in
+
+# Package for compute emulator
+csx/
+
+# Package folder (all Nugets)
+packages/
+
+Build/
+
+*.user
+*.suo
+*.[Cc]ache
+*.bak
+*.log
+
+# OS junk files
+*.DS_Store
+[Tt]humbs.db 
+
+# mstest test results
+TestResults
+
+# Resharper
+_ReSharper.*
+*.resharper
+
+# ncrunch
+*ncrunch*
+*crunch*.local.xml
+
+# Source Control
+*.vspscc
+*.vssscc
+*.scc
+
+# Upgrade reports
+_UpgradeReport_Files/
+UpgradeLog*.htm
+UpgradeLog*.XML
+
+# JustCode folder
+.JustCode/
+
+#New Azure rcf folder
+rcf/
