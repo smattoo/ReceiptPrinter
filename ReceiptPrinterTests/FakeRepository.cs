@@ -7,7 +7,7 @@ using BillingSystem.Domain;
 
 namespace ReceiptPrinterTests
 {
-    public static class TestRepository
+    public static class FakeRepository
     {
         public static IEnumerable<ShoppingBasket> GetShoppingBaskets()
         {

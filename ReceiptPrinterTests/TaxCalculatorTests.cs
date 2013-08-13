@@ -22,7 +22,7 @@ namespace ReceiptPrinterTests
         {
             taxCalculator = new TaxCalculator();
             mockShoppingBasketRepository = new Mock<IShoppingBasketRepository>();
-            mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(TestRepository.GetShoppingBaskets());
+            mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(FakeRepository.GetShoppingBaskets());
         }
 
         [Test]
