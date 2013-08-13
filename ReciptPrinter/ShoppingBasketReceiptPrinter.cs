@@ -21,8 +21,6 @@ namespace ReciptPrinter
 
         public PrintStatus PrintReceipt()
         {
-            
-
             var shoppingBasketList = shoppingBasket.GetAllShoppingBaskets();
 
             if (!shoppingBasketList.Any())
@@ -32,9 +30,8 @@ namespace ReciptPrinter
 
             foreach (var basketNumber in distinctBasketsNumbers)
             {
-                double totalSalesTax = 0.0;
-                double roundedSalesTax = 0.0;
-                double totalAmount = 0.0;
+                var totalSalesTax = 0.0;
+                var totalAmount = 0.0;
 
                 var productsInOneBasket = shoppingBasketList.Where(s => s.ShoppingBasketNumber == basketNumber);
                 foreach (var product in productsInOneBasket)
@@ -42,14 +39,17 @@ namespace ReciptPrinter
                     var productDetail = product.ProductDetail;
                     var productSalesTax = taxCalculator.CalculateSalesTaxForProduct(productDetail);
                     var productImportDuty = taxCalculator.CalculateImportDutyForProduct(productDetail);
-                    var productTotal = productDetail.Price + productSalesTax + productImportDuty;
-                    productTotal = Math.Round(productTotal, 2);
-                    totalSalesTax +=  productSalesTax + productImportDuty;
-                    roundedSalesTax = Math.Round((Math.Round(totalSalesTax * 20, MidpointRounding.AwayFromZero) / 20), 1);
+
+                    var productTotalSalesTax = productSalesTax + productImportDuty;
+                    var roundedProductTotalSalesTax = (Math.Round(productTotalSalesTax/0.05))* 0.05;
+
+                    totalSalesTax += roundedProductTotalSalesTax;
+                    var productTotal = productDetail.Price + roundedProductTotalSalesTax;
+                    
                     totalAmount += productTotal;
                     Console.WriteLine(string.Format("{0} {1}: {2}", productDetail.Qty, productDetail.ProductType, productTotal));
                 }
-                Console.WriteLine(string.Format("Sales Tax: {0}", roundedSalesTax));
+                Console.WriteLine(string.Format("Sales Tax: {0}", totalSalesTax));
                 Console.WriteLine(string.Format("Total: {0}", totalAmount));
             }
             return PrintStatus.Sucess;
