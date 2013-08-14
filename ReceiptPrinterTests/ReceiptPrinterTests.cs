@@ -44,34 +44,17 @@ namespace ReceiptPrinterTests
         [Test]
         public void shoud_calculate_sales_tax_and_import_duty_for_each_product_in_all_the_shopping_baskets()
         {   
-            mockTaxCalculator.Setup(m => m.CalculateSalesTaxForProduct(It.IsAny<ProductDetail>()))
+            mockTaxCalculator.Setup(m => m.CalculateSalesTax(It.IsAny<ProductDetail>()))
                 .Returns(It.IsAny<double>);
-            mockTaxCalculator.Setup(m => m.CalculateImportDutyForProduct(It.IsAny<ProductDetail>()))
-                .Returns(It.IsAny<double>);
-            
             
             mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(FakeRepository.GetShoppingBaskets());
             var totalProducts = FakeRepository.GetShoppingBaskets().Count();
             shoppingBasketReceiptPrinter.PrintReceipt();
-            mockTaxCalculator.Verify(m => m.CalculateSalesTaxForProduct(It.IsAny<ProductDetail>()), Times.Exactly(totalProducts));
-            mockTaxCalculator.Verify(m => m.CalculateImportDutyForProduct(It.IsAny<ProductDetail>()), Times.Exactly(totalProducts));
+            mockTaxCalculator.Verify(m => m.CalculateSalesTax(It.IsAny<ProductDetail>()), Times.Exactly(totalProducts));
             mockTaxCalculator.VerifyAll();
         }
 
-        
-        [Test]
-        public void should_round_total_sales_tax_for_a_product_to_nearest_05_decimal()
-        {
-            mockRounder.Setup(m => m.Round(It.IsAny<double>())).Returns(It.IsAny<double>);
-            mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(FakeRepository.GetShoppingBaskets());
-            var totalNumberOfProducts = FakeRepository.GetShoppingBaskets().Count();
-
-            shoppingBasketReceiptPrinter.PrintReceipt();
-
-            mockRounder.Verify(m => m.Round(It.IsAny<double>()), Times.Exactly(totalNumberOfProducts));
-            mockRounder.VerifyAll();
-        }
-
+       
         [Test]
         public void should_print_details_for_each_product_in_shoppingbasket()
         {
@@ -82,8 +65,8 @@ namespace ReceiptPrinterTests
             var totalPrintCommands = totalNumberOfProducts + 2 * FakeRepository.NumberOfUniqueBaskets;
 
             shoppingBasketReceiptPrinter.PrintReceipt();
-            mockPrinter.VerifyAll();
             mockPrinter.Verify(m => m.Print(It.IsAny<string>()), Times.Exactly(totalPrintCommands));
+            mockPrinter.VerifyAll();
         }
 
         [Test]

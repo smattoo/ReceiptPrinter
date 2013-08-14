@@ -16,11 +16,13 @@ namespace ReceiptPrinterTests
     {
         private TaxCalculator taxCalculator;
         private Mock<IShoppingBasketRepository> mockShoppingBasketRepository;
+        private Mock<IRounder> mockRounder;
 
         [SetUp]
         public void Setup()
         {
-            taxCalculator = new TaxCalculator();
+            mockRounder = new Mock<IRounder>(MockBehavior.Default);
+            taxCalculator = new TaxCalculator(mockRounder.Object);
             mockShoppingBasketRepository = new Mock<IShoppingBasketRepository>();
             mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(FakeRepository.GetShoppingBaskets());
         }
@@ -114,6 +116,62 @@ namespace ReceiptPrinterTests
 
             //verify
             Assert.That(importDuty, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void should_round_total_sales_tax_for_a_product()
+        {
+            var nonExemptProduct = mockShoppingBasketRepository.Object.GetAllShoppingBaskets()
+                .FirstOrDefault(t => t.ProductDetail.ProductType == ProductType.Other);
+            mockRounder.Setup(m => m.Round(It.IsAny<double>())).Returns(It.IsAny<double>);
+
+            taxCalculator.CalculateSalesTax(nonExemptProduct.ProductDetail);
+
+            mockRounder.Verify(m => m.Round(It.IsAny<double>()), Times.Exactly(1));
+            mockRounder.VerifyAll();
+        }
+
+        [Test]
+        public void should_calulate_total_sales_tax_for_non_imported_exempted_products()
+        {
+            
+            //setup
+            var nonImportedBook = mockShoppingBasketRepository.Object.GetAllShoppingBaskets()
+                .FirstOrDefault(t => t.ProductDetail.ProductType == ProductType.Books && t.ProductDetail.IsImported == false);
+            
+            var salesTax = taxCalculator.CalculateSalesTaxForProduct(nonImportedBook.ProductDetail);
+            var importDuty = taxCalculator.CalculateImportDutyForProduct(nonImportedBook.ProductDetail);
+
+            var productSalesTax = salesTax + importDuty;
+            var expectedSalesTax = mockRounder.Object.Round(productSalesTax);
+           
+            //act
+            var actualSalesTax = taxCalculator.CalculateSalesTax(nonImportedBook.ProductDetail);
+
+            //verify
+            Assert.That(actualSalesTax, Is.EqualTo(actualSalesTax));
+        }
+
+        [Test]
+        public void should_calulate_total_sales_tax_for_non_imported_non_exempted_products()
+        {
+            //setup
+            //TODO: is there a better way to do this?
+            taxCalculator = new TaxCalculator(new Rounder());
+            var nonExempted = mockShoppingBasketRepository.Object.GetAllShoppingBaskets()
+                .FirstOrDefault(t => t.ProductDetail.ProductType == ProductType.Other && t.ProductDetail.IsImported == false);
+
+            var salesTax = taxCalculator.CalculateSalesTaxForProduct(nonExempted.ProductDetail);
+            var importDuty = taxCalculator.CalculateImportDutyForProduct(nonExempted.ProductDetail);
+
+            var productSalesTax = salesTax + importDuty;
+            var expectedSalesTax = new Rounder().Round(productSalesTax);
+
+            //act
+            var actualSalesTax = taxCalculator.CalculateSalesTax(nonExempted.ProductDetail);
+
+            //verify
+            Assert.That(actualSalesTax, Is.EqualTo(expectedSalesTax));
         }
     }
 }

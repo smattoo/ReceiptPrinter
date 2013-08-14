@@ -51,14 +51,10 @@ namespace ReciptPrinter
                 foreach (var product in productsInOneBasket)
                 {
                     var productDetail = product.ProductDetail;
-                    var productSalesTax = taxCalculator.CalculateSalesTaxForProduct(productDetail);
-                    var productImportDuty = taxCalculator.CalculateImportDutyForProduct(productDetail);
-
-                    var productTotalSalesTax = productSalesTax + productImportDuty;
-                    var roundedProductTotalSalesTax = rounder.Round(productTotalSalesTax); 
-
-                    totalSalesTax += roundedProductTotalSalesTax;
-                    var productTotal = productDetail.Price + roundedProductTotalSalesTax;
+                    var productSalesTax = taxCalculator.CalculateSalesTax(productDetail);
+                    
+                    totalSalesTax += productSalesTax;
+                    var productTotal = productDetail.Price + productSalesTax;
                     
                     totalAmount += productTotal;
                     printer.Print(string.Format("{0} {1}: {2}", productDetail.Qty, productDetail.ProductName, productTotal));

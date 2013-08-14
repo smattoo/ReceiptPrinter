@@ -8,8 +8,14 @@ namespace ReciptPrinter
     {
         private const double salesTaxRate = 0.10;
         private const double importDutyRate = 0.05;
+        private readonly IRounder rounder;
 
-        public virtual double CalculateSalesTaxForProduct(ProductDetail productDetail)
+        public TaxCalculator(IRounder rounder)
+        {
+            this.rounder = rounder;
+        }
+
+        public double CalculateSalesTaxForProduct(ProductDetail productDetail)
         {
             double salesTax = 0;
             switch (productDetail.ProductType)
@@ -31,7 +37,9 @@ namespace ReciptPrinter
             return salesTax;
         }
 
-        public virtual double CalculateImportDutyForProduct(ProductDetail productDetail)
+       
+
+        public  double CalculateImportDutyForProduct(ProductDetail productDetail)
         {
             if (!productDetail.IsImported)
                 return 0;
@@ -40,6 +48,15 @@ namespace ReciptPrinter
                 var importDuty = importDutyRate * productDetail.Price * productDetail.Qty;
                 return importDuty;
             }
+        }
+
+        public double CalculateSalesTax(ProductDetail productDetail)
+        {
+            var productSalesTax = CalculateSalesTaxForProduct(productDetail);
+            var productImportDuty = CalculateImportDutyForProduct(productDetail);
+
+            var productTotalSalesTax = productSalesTax + productImportDuty;
+            return rounder.Round(productTotalSalesTax); 
         }
     }
 }
