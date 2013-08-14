@@ -17,7 +17,6 @@ namespace ReceiptPrinterTests
 
         private Mock<IShoppingBasketRepository> mockShoppingBasketRepository;
         private Mock<ITaxCalculator> mockTaxCalculator;
-        private Mock<IRounder> mockRounder;
         private Mock<IPrinter> mockPrinter;
         private ShoppingBasketReceiptPrinter shoppingBasketReceiptPrinter;
 
@@ -26,10 +25,9 @@ namespace ReceiptPrinterTests
         {
             var mockRepo = new MockRepository(MockBehavior.Loose);
             mockTaxCalculator = mockRepo.Create<ITaxCalculator>();
-            mockRounder = mockRepo.Create<IRounder>();
             mockPrinter = mockRepo.Create<IPrinter>();
             mockShoppingBasketRepository = new Mock<IShoppingBasketRepository>();
-            shoppingBasketReceiptPrinter = new ShoppingBasketReceiptPrinter(mockShoppingBasketRepository.Object, mockTaxCalculator.Object, mockRounder.Object, mockPrinter.Object);
+            shoppingBasketReceiptPrinter = new ShoppingBasketReceiptPrinter(mockShoppingBasketRepository.Object, mockTaxCalculator.Object, mockPrinter.Object);
         }
 
 
@@ -68,13 +66,5 @@ namespace ReceiptPrinterTests
             mockPrinter.Verify(m => m.Print(It.IsAny<string>()), Times.Exactly(totalPrintCommands));
             mockPrinter.VerifyAll();
         }
-
-        [Test]
-        public void should_print_total_amount_forshoppingbasket()
-        {
-
-        }
-
-
     }
 }

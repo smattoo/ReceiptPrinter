@@ -18,7 +18,7 @@ namespace ReciptPrinter
             var printer = (Printer)AutomaticFactory.GetMeOne(typeof(Printer));
             
 
-            var  shoppingBasketReceiptPrinter = new ShoppingBasketReceiptPrinter(shoppingBasket,taxCalculator,rounder,printer );
+            var  shoppingBasketReceiptPrinter = new ShoppingBasketReceiptPrinter(shoppingBasket,taxCalculator,printer);
             shoppingBasketReceiptPrinter.PrintReceipt();
 
             Console.ReadKey();

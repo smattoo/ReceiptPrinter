@@ -18,15 +18,12 @@ namespace ReciptPrinter
     {
         private readonly IShoppingBasketRepository shoppingBasket;
         private readonly ITaxCalculator taxCalculator;
-        
-        private readonly IRounder rounder;
         private readonly IPrinter printer;
         
-        public ShoppingBasketReceiptPrinter(IShoppingBasketRepository shoppingBasket, ITaxCalculator taxCalculator, IRounder rounder, IPrinter printer)
+        public ShoppingBasketReceiptPrinter(IShoppingBasketRepository shoppingBasket, ITaxCalculator taxCalculator, IPrinter printer)
         {
             this.shoppingBasket = shoppingBasket;
             this.taxCalculator = taxCalculator;
-            this.rounder = rounder;
             this.printer = printer;
         }
 
