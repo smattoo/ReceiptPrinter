@@ -16,83 +16,81 @@ namespace ReceiptPrinterTests
     {
 
         private Mock<IShoppingBasketRepository> mockShoppingBasketRepository;
-        private TaxCalculator taxCalculator;
+        private Mock<ITaxCalculator> mockTaxCalculator;
+        private Mock<IRounder> mockRounder;
+        private Mock<IPrinter> mockPrinter;
         private ShoppingBasketReceiptPrinter shoppingBasketReceiptPrinter;
 
         [SetUp]
         public void Setup()
         {
+            var mockRepo = new MockRepository(MockBehavior.Loose);
+            mockTaxCalculator = mockRepo.Create<ITaxCalculator>();
+            mockRounder = mockRepo.Create<IRounder>();
+            mockPrinter = mockRepo.Create<IPrinter>();
             mockShoppingBasketRepository = new Mock<IShoppingBasketRepository>();
-            mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(FakeRepository.GetShoppingBaskets());
-            taxCalculator = new TaxCalculator();
-            //shoppingBasketReceiptPrinter = new ShoppingBasketReceiptPrinter(mockShoppingBasketRepository.Object,taxCalculator);
+            shoppingBasketReceiptPrinter = new ShoppingBasketReceiptPrinter(mockShoppingBasketRepository.Object, mockTaxCalculator.Object, mockRounder.Object, mockPrinter.Object);
         }
 
 
-       // [Test]
-       // public void sales_tax_on_books_should_be_zero()
-       // {
-       //     //act
-       //     shoppingBasketReceiptPrinter.PrintReceipt();
+        [Test]
+        public void should_return_shopping_basket_emoty_if_shopping_basket_is_empty()
+        {
+            mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(new List<ShoppingBasket>());
+            var status = shoppingBasketReceiptPrinter.PrintReceipt();
+            status.ShouldBe(PrintStatus.ShoppingBasketEmpty);
+        }
+
+        [Test]
+        public void shoud_calculate_sales_tax_and_import_duty_for_each_product_in_all_the_shopping_baskets()
+        {   
+            mockTaxCalculator.Setup(m => m.CalculateSalesTaxForProduct(It.IsAny<ProductDetail>()))
+                .Returns(It.IsAny<double>);
+            mockTaxCalculator.Setup(m => m.CalculateImportDutyForProduct(It.IsAny<ProductDetail>()))
+                .Returns(It.IsAny<double>);
             
-           
-       //     //verify
-       //     //var salesTax = taxCalculator.CalculateSalesTaxForProduct(product);
-       ////     Assert.That(salesTax,Is.EqualTo(0));
-       // }
+            
+            mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(FakeRepository.GetShoppingBaskets());
+            var totalProducts = FakeRepository.GetShoppingBaskets().Count();
+            shoppingBasketReceiptPrinter.PrintReceipt();
+            mockTaxCalculator.Verify(m => m.CalculateSalesTaxForProduct(It.IsAny<ProductDetail>()), Times.Exactly(totalProducts));
+            mockTaxCalculator.Verify(m => m.CalculateImportDutyForProduct(It.IsAny<ProductDetail>()), Times.Exactly(totalProducts));
+            mockTaxCalculator.VerifyAll();
+        }
 
-        //[Test]
-        //public void sales_tax_on_food_should_be_zero()
-        //{
-        //    //setup
-        //    var product = mockProductDetail.Object;
-        //    product.IsImported = false;
-        //    product.ProductType = ProductType.Food;
-        //    product.Price = It.IsInRange(1, double.MaxValue, Range.Inclusive);
-        //    product.Qty = It.IsInRange(1, int.MaxValue, Range.Inclusive);
+        
+        [Test]
+        public void should_round_total_sales_tax_for_a_product_to_nearest_05_decimal()
+        {
+            mockRounder.Setup(m => m.Round(It.IsAny<double>())).Returns(It.IsAny<double>);
+            mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(FakeRepository.GetShoppingBaskets());
+            var totalNumberOfProducts = FakeRepository.GetShoppingBaskets().Count();
 
-        //    var salesTax = taxCalculator.CalculateSalesTaxForProduct(product);
-        //    Assert.That(salesTax, Is.EqualTo(0));
-        //}
+            shoppingBasketReceiptPrinter.PrintReceipt();
 
-        //[Test]
-        //public void sales_tax_on_medical_should_be_zero()
-        //{
-        //    //setup
-        //    var product = mockProductDetail.Object;
-        //    product.IsImported = false;
-        //    product.ProductType = ProductType.Medical;
-        //    product.Price = It.IsInRange(1, double.MaxValue, Range.Inclusive);
-        //    product.Qty = It.IsInRange(1, int.MaxValue, Range.Inclusive);
+            mockRounder.Verify(m => m.Round(It.IsAny<double>()), Times.Exactly(totalNumberOfProducts));
+            mockRounder.VerifyAll();
+        }
 
-        //    var salesTax = taxCalculator.CalculateSalesTaxForProduct(product);
-        //    Assert.That(salesTax, Is.EqualTo(0));
-        //}
+        [Test]
+        public void should_print_details_for_each_product_in_shoppingbasket()
+        {
+            mockPrinter.Setup(m => m.Print(It.IsAny<string>()));
+            mockShoppingBasketRepository.Setup(rep => rep.GetAllShoppingBaskets()).Returns(FakeRepository.GetShoppingBaskets());
+            var totalNumberOfProducts = FakeRepository.GetShoppingBaskets().Count();
 
-        //[Test]
-        //public void sales_tax_on_other_should_be_10_percent()
-        //{
-        //    //setup
-        //    var product = mockProductDetail.Object;
-        //    product.IsImported = false;
-        //    product.ProductType = ProductType.Other;
-        //    product.Price = 1;
-        //    product.Qty = 1;
+            var totalPrintCommands = totalNumberOfProducts + 2 * FakeRepository.NumberOfUniqueBaskets;
 
-        //    var salesTax = taxCalculator.CalculateSalesTaxForProduct(product);
-        //    Assert.That(salesTax, !Is.EqualTo(0));
-        //}
+            shoppingBasketReceiptPrinter.PrintReceipt();
+            mockPrinter.VerifyAll();
+            mockPrinter.Verify(m => m.Print(It.IsAny<string>()), Times.Exactly(totalPrintCommands));
+        }
 
-        //[Test]
-        //public void should_not_print_if_shopping_basket_empty()
-        //{   
-        //    var shoppingBasket = mockShoppingBasket.Object;
-        //    shoppingBasket.Products = new List<IProductDetail>();
-        //    shoppingBasketReceiptPrinter = new ShoppingBasketReceiptPrinter(shoppingBasket, taxCalculator);
-        //    var status =  shoppingBasketReceiptPrinter.PrintReceipt();
-        //    status.ShouldBe(ShoppingBasketReceiptPrinter.PrintStatus.ShoppingCartEmpty);
-        //}
+        [Test]
+        public void should_print_total_amount_forshoppingbasket()
+        {
 
+        }
 
 
     }

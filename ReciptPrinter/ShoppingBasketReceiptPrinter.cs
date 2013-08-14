@@ -8,15 +8,27 @@ using ReceiptPrinter.Repositories;
 
 namespace ReciptPrinter
 {
+    public enum PrintStatus
+    {
+        ShoppingBasketEmpty,
+        Sucess
+    }
+
     public class ShoppingBasketReceiptPrinter
     {
         private readonly IShoppingBasketRepository shoppingBasket;
         private readonly ITaxCalculator taxCalculator;
+        private readonly IRounder rounder;
+        private readonly IPrinter printer;
+        
 
-        public ShoppingBasketReceiptPrinter(IShoppingBasketRepository shoppingBasket, ITaxCalculator taxCalculator)
+
+        public ShoppingBasketReceiptPrinter(IShoppingBasketRepository shoppingBasket, ITaxCalculator taxCalculator, IRounder rounder, IPrinter printer)
         {
             this.shoppingBasket = shoppingBasket;
             this.taxCalculator = taxCalculator;
+            this.rounder = rounder;
+            this.printer = printer;
         }
 
         public PrintStatus PrintReceipt()
@@ -24,7 +36,7 @@ namespace ReciptPrinter
             var shoppingBasketList = shoppingBasket.GetAllShoppingBaskets();
 
             if (!shoppingBasketList.Any())
-                return PrintStatus.ShoppingCartEmpty;
+                return PrintStatus.ShoppingBasketEmpty;
 
             var distinctBasketsNumbers = shoppingBasketList.Select(s => s.ShoppingBasketNumber).Distinct();
 
@@ -41,25 +53,19 @@ namespace ReciptPrinter
                     var productImportDuty = taxCalculator.CalculateImportDutyForProduct(productDetail);
 
                     var productTotalSalesTax = productSalesTax + productImportDuty;
-                    var roundedProductTotalSalesTax = (Math.Round(productTotalSalesTax/0.05))* 0.05;
+                    var roundedProductTotalSalesTax = rounder.Round(productTotalSalesTax); 
 
                     totalSalesTax += roundedProductTotalSalesTax;
                     var productTotal = productDetail.Price + roundedProductTotalSalesTax;
                     
                     totalAmount += productTotal;
-                    Console.WriteLine(string.Format("{0} {1}: {2}", productDetail.Qty, productDetail.ProductType, productTotal));
+                    printer.Print(string.Format("{0} {1}: {2}", productDetail.Qty, productDetail.ProductName, productTotal));
                 }
-                Console.WriteLine(string.Format("Sales Tax: {0}", totalSalesTax));
-                Console.WriteLine(string.Format("Total: {0}", totalAmount));
+
+                printer.Print(string.Format("Sales Tax: {0}", totalSalesTax));
+                printer.Print(string.Format("Total: {0}", totalAmount));
             }
             return PrintStatus.Sucess;
-        }
-
-        
-        public enum PrintStatus
-        {
-            ShoppingCartEmpty,
-            Sucess
         }
     }
 }

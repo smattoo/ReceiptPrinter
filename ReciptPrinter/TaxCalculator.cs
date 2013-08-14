@@ -9,7 +9,7 @@ namespace ReciptPrinter
         private const double salesTaxRate = 0.10;
         private const double importDutyRate = 0.05;
 
-        public double CalculateSalesTaxForProduct(ProductDetail productDetail)
+        public virtual double CalculateSalesTaxForProduct(ProductDetail productDetail)
         {
             double salesTax = 0;
             switch (productDetail.ProductType)
@@ -31,7 +31,7 @@ namespace ReciptPrinter
             return salesTax;
         }
 
-        public double CalculateImportDutyForProduct(ProductDetail productDetail)
+        public virtual double CalculateImportDutyForProduct(ProductDetail productDetail)
         {
             if (!productDetail.IsImported)
                 return 0;

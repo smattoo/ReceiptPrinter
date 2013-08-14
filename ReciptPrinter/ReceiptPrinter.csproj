@@ -42,9 +42,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutomaticFactory.cs" />
+    <Compile Include="IPrinter.cs" />
+    <Compile Include="IRounder.cs" />
     <Compile Include="ITaxCalculator.cs" />
+    <Compile Include="Printer.cs" />
     <Compile Include="ReceiptPrinterConsole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rounder.cs" />
     <Compile Include="ShoppingBasketReceiptPrinter.cs" />
     <Compile Include="TaxCalculator.cs" />
   </ItemGroup>

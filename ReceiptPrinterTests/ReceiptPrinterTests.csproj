@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="ReceiptPrinterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RounderTests.cs" />
     <Compile Include="TaxCalculatorTests.cs" />
     <Compile Include="FakeRepository.cs" />
   </ItemGroup>

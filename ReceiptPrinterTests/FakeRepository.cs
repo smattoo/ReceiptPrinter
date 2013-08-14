@@ -9,7 +9,19 @@ namespace ReceiptPrinterTests
 {
     public static class FakeRepository
     {
-        public static IEnumerable<ShoppingBasket> GetShoppingBaskets()
+        private static List<ShoppingBasket> shoppingBaskets;
+        public static int NumberOfUniqueBaskets { get; set; }
+
+
+        static FakeRepository()
+        {
+            shoppingBaskets = LoadTestData();
+            NumberOfUniqueBaskets = shoppingBaskets.Select(s => s.ShoppingBasketNumber).Distinct().Count();
+
+
+        }
+
+        private static List<ShoppingBasket> LoadTestData()
         {
             //  This method will be called after migrating to the latest version.
             var shoppingBaskets = new List<ShoppingBasket>
@@ -127,6 +139,16 @@ namespace ReceiptPrinterTests
             };
 
             return shoppingBaskets;
+        }
+
+        public static IEnumerable<ShoppingBasket> GetShoppingBaskets()
+        {
+            return shoppingBaskets;
+        }
+
+        public static IEnumerable<ShoppingBasket> GetShoppingBasketsById(int shoppingBasketNumber)
+        {
+            return shoppingBaskets.Where(s => s.ShoppingBasketNumber == shoppingBasketNumber);
         }
     }
 }
