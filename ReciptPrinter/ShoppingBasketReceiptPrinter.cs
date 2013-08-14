@@ -18,11 +18,10 @@ namespace ReciptPrinter
     {
         private readonly IShoppingBasketRepository shoppingBasket;
         private readonly ITaxCalculator taxCalculator;
+        
         private readonly IRounder rounder;
         private readonly IPrinter printer;
         
-
-
         public ShoppingBasketReceiptPrinter(IShoppingBasketRepository shoppingBasket, ITaxCalculator taxCalculator, IRounder rounder, IPrinter printer)
         {
             this.shoppingBasket = shoppingBasket;
@@ -38,10 +37,13 @@ namespace ReciptPrinter
             if (!shoppingBasketList.Any())
                 return PrintStatus.ShoppingBasketEmpty;
 
-            var distinctBasketsNumbers = shoppingBasketList.Select(s => s.ShoppingBasketNumber).Distinct();
-
+            var distinctBasketsNumbers =
+                shoppingBasketList.OrderBy(s => s.ShoppingBasketNumber).Select(s => s.ShoppingBasketNumber).Distinct();
+            
+            
             foreach (var basketNumber in distinctBasketsNumbers)
             {
+                Console.WriteLine(string.Format("-----Shopping Basket: {0}-----",basketNumber));
                 var totalSalesTax = 0.0;
                 var totalAmount = 0.0;
 
@@ -64,6 +66,8 @@ namespace ReciptPrinter
 
                 printer.Print(string.Format("Sales Tax: {0}", totalSalesTax));
                 printer.Print(string.Format("Total: {0}", totalAmount));
+
+                Console.WriteLine();
             }
             return PrintStatus.Sucess;
         }
